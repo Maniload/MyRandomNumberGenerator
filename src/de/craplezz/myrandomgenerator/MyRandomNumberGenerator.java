@@ -1,5 +1,12 @@
 package de.craplezz.myrandomgenerator;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 class MyRandomNumberGenerator implements Generator {
@@ -56,6 +63,7 @@ class MyRandomNumberGenerator implements Generator {
         System.out.println("Umgebung: [" + lowX + ";" + highX + "]");
 
         int missed = 0;
+        int[] values = new int[100];
 
         // Seed
 
@@ -77,29 +85,30 @@ class MyRandomNumberGenerator implements Generator {
             // Checking results
 
             int[] hits = new int[6];
+            int value = 0;
 
             for (int i = 0; i < results.length; i++) {
                 hits[results[i] - 1]++;
+                value += results[i] * p;
             }
 
             System.out.println("Hits: " + Arrays.toString(hits));
 
-            for (int i = 0; i < hits.length; i++) {
-                int hit = hits[i];
-                boolean test = lowX < hit && hit < highX;
+            boolean test = lowX < value && value < highX;
 
-                System.out.println("Test " + (i + 1) + ": " + lowX + " < " + hit + " < " + highX + " = " + test);
+            System.out.println("Test: " + lowX + " < " + value + " < " + highX + " = " + test);
 
-                if (!test) {
-                    missed++;
-                }
+            if (!test) {
+                missed++;
             }
+
+            values[testId] = value;
 
             seed++;
         }
 
         System.out.println();
-        System.out.println("Fehlschläge: " + missed + " / 600");
+        System.out.println("Fehlschläge: " + missed + " / 100");
     }
 
 }
